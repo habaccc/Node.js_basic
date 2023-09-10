@@ -1,6 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
+var qs = require('querystring');
 
 // 중복된 코드들을 function을 사용해서 정리해줌.
 function templateHTML(title, list, body) {
@@ -14,6 +15,7 @@ function templateHTML(title, list, body) {
   <body>
     <h1><a href="/">WEB</a></h1>
     ${list}
+    <a href="/create">create</a>
     ${body}
   </body>
   </html>
@@ -56,6 +58,36 @@ var app = http.createServer(function (request, response) {
         });
       });
     }
+  } else if (pathname === '/create') {
+    fs.readdir('./data', function (error, filelist) {
+      var title = 'WEB - create';
+      var list = templateList(filelist);
+      var template = templateHTML(title, list,
+        `<form action="http://localhost:3000/create_process" method="post"> 
+      <p><input type="text" name="title" placeholder="title"></p>
+      <p>
+          <textarea name="description" placeholder="description"></textarea>
+      </p>
+      <p>
+          <input type="submit">
+      </p>
+      </form>`);
+      response.writeHead(200);
+      response.end(template);
+    });
+  } else if(pathname === '/create_process'){
+    var body ='';
+    request.on('data', function(data){
+        body = body + data; // 콜백(data)가 실행될 때마다 data를 넣어줌.
+    });
+    request.on('end', function(){ // 더 이상 들어올 data가 없으면 end의 콜백이 실행됨.
+      var post = qs.parse(body);
+      var title = post.title;
+      var description = post.description;
+      console.log(post.title);
+    });
+    response.writeHead(200);
+    response.end('success');
   } else {
     response.writeHead(404);
     response.end('Not found');
