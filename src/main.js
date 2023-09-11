@@ -3,6 +3,26 @@ var fs = require('fs');
 var url = require('url');
 var qs = require('querystring');
 
+var template = {
+  html:function(title, list, body, control){
+    return `
+    <!doctype html>
+    <html>
+    <head>
+      <title>WEB1 - ${title}</title>
+      <meta charset="utf-8">
+    </head>
+    <body>
+      <h1><a href="/">WEB</a></h1>
+      ${list}
+      ${control}
+      ${body}
+    </body>
+    </html>
+    `;
+  }
+}
+
 // 중복된 코드들을 function을 사용해서 정리해줌.
 function templateHTML(title, list, body, control){
   return `
@@ -56,7 +76,12 @@ var app = http.createServer(function(request,response){
             var list = templateList(filelist);
             var template = templateHTML(title, list,
               `<h2>${title}</h2>${description}`,
-              `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`
+              `<a href="/create">create</a>
+               <a href="/update?id=${title}">update</a>
+               <form action="delete_process" method="post">
+                <input type="hidden" name="id" value="${title}">
+                <input type="submit" value="delete">
+               </form>`
             );
             response.writeHead(200);
             response.end(template);
@@ -136,6 +161,19 @@ var app = http.createServer(function(request,response){
             response.end();
           })
         });
+    });
+  } else if(pathname === '/delete_process'){
+    var body = '';
+    request.on('data', function(data){
+        body = body + data;
+    });
+    request.on('end', function(){
+        var post = qs.parse(body);
+        var id = post.id;
+        fs.unlink(`data/${id}`, function(error){ // 파일이 삭제됨.
+          response.writeHead(302, {Location: `/`});
+          response.end();
+        })
     });
   } else {
     response.writeHead(404);
