@@ -1,0 +1,26 @@
+pm2 -g
+- pm2 설치
+
+pm2 start app.js
+- 실행
+
+pm2 monit
+- 현재 실행되고 있는 pm2를 보여줌
+
+pm2 list
+- 실행중인 프로세스의 목록을 보여줌
+
+pm2 stop app
+- 끄고싶은 프로세스를 입력하면 꺼짐
+
+pm2 start app.js --watch
+- 파일을 수정할 때마다 껏다 킬 필요없이 자동으로 새로고침해줌.
+
+pm2 log
+- 저장했을 때나 어떠한 문제점이 있을 때 화면에 보여줌
+
+pm2 kill 
+- pm2로 실행한 모든 프로세스를 중지 & 삭제
+
+pm2 start main.js --watch --ignore-watch="data/* sessions/*"  --no-daemon
+-  pm2를 실행하면서 로그가 출력되도록 함. (--no-daemon) 또 특정 디랙토리에 대한 watch를 하지 않도록 하는 방법
