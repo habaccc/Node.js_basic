@@ -1,4 +1,4 @@
-// 객체 지향
+// 객체 지향 Object Oriented Programming
 var o = {
     v1:'v1',
     v2:'v2',
