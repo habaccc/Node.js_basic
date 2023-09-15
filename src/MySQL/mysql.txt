@@ -1,0 +1,84 @@
+<mySQL의 3개 구성요소>
+1. 테이블(표)
+2. 표가 많아지면? 표를 정리해야 한다. = Database (표를 그룹핑하는 일종의 폴더) = 스키마
+3. 스키마가 많아지면? 이를 'Database Server'에 저장하게 된다.
+
+테이블 < 데이터베이스 스키마 < 데이터베이스 서버
+
+<데이터베이스 서버>
+cmd로 서버에 로그인
+데이터베이스를 사용할 때의 효용 중 하나 '보안' + 권한 (CRUD 중 일부 또는 전체에 대한 권한 부여 가능)
+1. 보안 - 자체적인 보안 체계가 있어서 안전하게 데이터 보관 가능
+2. 권한 - 여러 사람 등록 가능
+
+C:\Bitnami\wampstack-8.0.3-2\mysql\bin>mysql -uroot -p : 경로 잘 찾아서 접속
+- -uroot : root user로 접속
+- root : 관리자
+
+<데이터베이스 스키마>
+생성 - CREATE DATABASE db;
+제거 - DROP DATABASE db;
+
+모든 데이터베이스 보기 - SHOW DATABASES;
+데이터베이스 사용 선언 - USE db;
+
+<테이블>
+SQL = Structured Query Language (구조화 + 질문형 + 언어)
+
+행 = row = record
+열 = column = data type
+
+<테이블 생성 - 컬럼 만들기>
+CREATE TABLE topic(
+    ->  id INT(11) NOT NULL AUTO_INCREMENT, 
+    ->  title VARCHAR(100) NOT NULL,
+    ->  description TEXT NULL,
+    ->  created DATETIME NOT NULL,
+    ->  author VARCHAR(30) NULL,
+    ->  profile VARCHAR(100) NULL,
+    ->  PRIMARY KEY(id));
+
+- NOT NULL : 데이터가 null이면 안됨
+- NULL : 데이터가 null이여도 됨
+- AUTO_INCREMENT : 자동으로 하나씩 증가
+- Primary Key(id) : 성능 향상, 중복 제거를 위해 사용(고유키)
+
+<SQL의 INSERT 구문>
+- DESC <테이블명>; : 테이블 구조 확인
+- INSERT INTO 테이블명(컬럼1, 컬럼2, ...) VALUES('값1', '값2', ...);
+- SELECT * FROM <테이블명> 
+
+INSERT INTO topic (title,description,created,author,profile) VALUES('MySQL','MySQL is ...',NOW(),'habaccc','developer');
+
+SELECT * FROM topic;
++----+------------+-------------------+---------------------+---------+-----------+
+| id | title      | description       | created             | author  | profile   |
++----+------------+-------------------+---------------------+---------+-----------+
+|  1 | MySQL      | MySQL is ...      | 2023-09-15 22:36:18 | habaccc | developer |
+|  2 | ORACLE     | ORACLE is ...     | 2023-09-15 22:38:08 | habaccc | developer |
+|  3 | SQL Server | SQL Server is ... | 2023-09-15 22:39:01 | habaccc | developer |
+|  4 | PostgreSQL | PostgreSQL is ... | 2023-09-15 22:39:30 | habaccc | developer |
+|  5 | MongoDB    | MongoDB is ...    | 2023-09-15 22:39:50 | habaccc | developer |
++----+------------+-------------------+---------------------+---------+-----------+
+
+<SQL의 SELECT 구문>
+
+SELECT id,title,created,author FROM topic WHERE author='habaccc' ORDER BY id DESC LIMIT 2;
++----+------------+---------------------+---------+
+| id | title      | created             | author  |
++----+------------+---------------------+---------+
+|  5 | MongoDB    | 2023-09-15 22:39:50 | habaccc |
+|  4 | PostgreSQL | 2023-09-15 22:39:30 | habaccc |
++----+------------+---------------------+---------+
+
+- LIMIT : 데이터를 가져오는 수 지정
+
+<SQL의 UPDATE 구문>
+
+UPDATE topic SET description='ORACLE is', title='Oracle' WHERE id=2;
+WHERE문은 꼭 넣어야 함.(당연함)
+
+<SQL의 DELETE 구문>
+
+DELETE FROM <테이블명> WHERE 컬럼1='값1';
+WHERE문을 생략하면 모든 행이 삭제됨.
