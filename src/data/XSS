@@ -1,4 +1,0 @@
-&lt;script&gt;
-alert('merong');
-&lt;/script&gt;
-<!-- 스크립트 태그가 적용되지 않고 그대로 출력되게 하는 것 -->
