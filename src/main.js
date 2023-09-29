@@ -5,6 +5,15 @@ var qs = require('querystring');
 var template = require('./lib/template.js'); // template.js의 모듈을 이용함.
 var path = require('path');
 var sanitizeHtml = require('sanitize-html');
+var mysql = require('mysql'); // mysql 모듈을 가져옴
+var db = mysql.createConnection({ // mysql 연결
+  host:'127.0.0.1',
+  user:'root',
+  password:'288604',
+  database:'opentutorials',
+  port:'3306',
+});
+db.connect();
 
 // template이라는 객체를 만듦.
 /*var template = {
@@ -74,11 +83,10 @@ var app = http.createServer(function(request,response){
     var pathname = url.parse(_url, true).pathname;
     if(pathname === '/'){
       if(queryData.id === undefined){
-        fs.readdir('./data', function(error, filelist){
+         /* fs.readdir('./data', function(error, filelist){
           var title = 'Welcome';
           var description = 'Hello, Node.js';
            
-          /*
           var list = templateList(filelist);
           var template = templateHTML(title, list,
             `<h2>${title}</h2>${description}`,
@@ -89,6 +97,7 @@ var app = http.createServer(function(request,response){
           */
 
           // 이전에 있던 위의 코드는 이름을 통해서 사용했는 데 template객체를 사용함.
+          /*
           var list = template.list(filelist);
           var html = template.HTML(title, list,
             `<h2>${title}</h2>${description}`,
@@ -96,8 +105,18 @@ var app = http.createServer(function(request,response){
           );
           response.writeHead(200);
           response.end(html);
+        }); */
+        db.query(`SELECT * FROM topic`, function(error, topics){
+          var title = 'Welcome';
+          var description = 'Hello, Node.js';
+          var list = template.list(topics);
+          var html = template.HTML(title, list,
+            `<h2>${title}</h2>${description}`,
+            `<a href="/create">create</a>`
+          );
+          response.writeHead(200);
+          response.end(html);
         });
-
       } else {
         fs.readdir('./data', function(error, filelist){
           var filteredId = path.parse(queryData.id).base;
