@@ -276,12 +276,21 @@ var app = http.createServer(function(request,response){
     });
     request.on('end', function(){
         var post = qs.parse(body);
-        var id = post.id;
-        var filteredId = path.parse(id).base;
+        //var id = post.id;
+        //var filteredId = path.parse(id).base;
+        db.query(`DELETE FROM topic WHERE id=?`, [post.id], function(error, result){
+          if(error){
+            throw error;
+          }
+          response.writeHead(302, {Location: `/`});
+          response.end();
+        });
+        /*
         fs.unlink(`data/${filteredId}`, function(error){ // 파일이 삭제됨.
           response.writeHead(302, {Location: `/`});
           response.end();
         })
+        */
     });
   } else {
     response.writeHead(404);
