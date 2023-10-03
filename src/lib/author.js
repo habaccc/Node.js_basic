@@ -126,3 +126,34 @@ exports.update_process = function(request, response){
       )
     });
   }
+
+  exports.delete_process = function(request, response){
+    var body ='';
+    request.on('data', function(data){
+        body = body + data;
+    });
+    request.on('end', function(){ 
+      var post = qs.parse(body);
+      db.query(
+        `DELETE FROM topic WHERE author_id=?`,
+        [post.id],
+        function(error1, result1){
+          if(error1){
+            throw error1;
+          } // 삭제 같이 민감한 작업은 throw를 통해서 다음 작업이 이뤄지지 않게 해야함. 작업에 실패했을 때 이전으로 돌릴 수 있음.
+              db.query(
+                `DELETE FROM author WHERE id=?`,
+                [post.id],
+                function(error2, result2){
+                  if(error2){
+                    throw error2;
+                  }
+                  response.writeHead(302, {Location: `/author`}); 
+                  response.end();
+            }
+          )
+        }
+      );
+      
+    });
+  }
